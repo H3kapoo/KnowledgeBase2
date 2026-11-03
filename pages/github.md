@@ -97,7 +97,10 @@ Suppose (1) is main branch and (2) a feature branch.
 Rebasing (2) into (1) will replay the changes on top of (1) and create a new commit hashes (D1, E1, F1)
 for each commit in (2) resulting in (1+2).
 ```
-<img width="1280" height="720" alt="image" src="assets/merge_rebase.png" />
+<details>
+<summary>👉 Expand for a nicer visualization </summary>
+<img width="1270" height="720" alt="image" src="../assets/merge_rebase.png" />
+</details>
 
 ## References Used
 - https://stackoverflow.com/questions/74037903/how-to-upload-a-local-repository-to-github
