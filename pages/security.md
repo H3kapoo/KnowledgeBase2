@@ -13,3 +13,6 @@ To show the contents for later use:
 ```cli
 $ cat ~/.ssh/id_rsa.pub
 ```
+
+#### References Used
+- https://stackoverflow.com/questions/75272888/adding-an-ssh-key-to-github-from-git

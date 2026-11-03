@@ -91,3 +91,10 @@ Suppose (1) is main branch and (2) a feature branch.
 Rebasing (2) into (1) will replay the changes on top of (1) and create a new commit hashes (D1, E1, F1)
 for each commit in (2) resulting in (1+2).
 ```
+
+## References Used
+- https://stackoverflow.com/questions/74037903/how-to-upload-a-local-repository-to-github
+- https://stackoverflow.com/questions/42830557/git-remote-add-origin-vs-remote-set-url-origin
+- https://stackoverflow.com/questions/75272888/adding-an-ssh-key-to-github-from-git
+- https://github.com/orgs/community/discussions/23171
+- https://stackoverflow.com/questions/8588768/how-do-i-avoid-the-specification-of-the-username-and-password-at-every-git-push
