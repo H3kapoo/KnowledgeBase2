@@ -8,3 +8,4 @@
 1. [Windowing](/pages/windowing.md)
 1. [Networking](/pages/networking.md)
 1. [Linux](/pages/linux.md)
+1. [CMake](/pages/cmake.md)
