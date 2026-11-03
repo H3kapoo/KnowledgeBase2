@@ -2,8 +2,9 @@
 
 ### Table of Contents
 1. [Git / Github](/pages/github.md)
-2. [Security](/pages/security.md)
-3. [C/C++](/pages/cpp.md)
-4. [OpenGL](/pages/opengl.md)
-5. [Networking](/pages/networking.md)
-6. [Linux](/pages/linux.md)
+1. [Security](/pages/security.md)
+1. [C/C++](/pages/cpp.md)
+1. [OpenGL](/pages/opengl.md)
+1. [Windowing](/pages/windowing.md)
+1. [Networking](/pages/networking.md)
+1. [Linux](/pages/linux.md)

@@ -27,7 +27,11 @@ $ git config --global user.email "email_here"
 $ git config --global user.name "github_name"
 ```
 
-### 5. [Adding a new remote (or modifying one):](#adding-new-remote)
+### 5. [Add, Modify or remove a remote:](#add-modify-remove-remote)
+Inspect remotes:
+```cli
+$ git remote -v
+```
 Add:
 ```cli
 $ git remote add <remote_name> <remote_path>
@@ -35,6 +39,10 @@ $ git remote add <remote_name> <remote_path>
 Modify:
 ```cli
 $ git remote set-url <remote_name> <remote_path>
+```
+Remove:
+```cli
+$ git remote rm <remote_name>
 ```
 Example:
 ```cli
@@ -62,7 +70,7 @@ Now you can push directly via SSH.
 
 > **_NOTE_**: Your remote url needs to be the SSH one for this to work, **not** the HTTPS one.
 
-### [Merge vs Rebase](#merge-vs-rebase)
+### 7. [Merge vs Rebase](#merge-vs-rebase)
 Merge will just create a new commit on top of the destination branch and will contain the changes from the commits of the source branch. <br/>
 The destination branch knows about the source branch and where the merge occured. <br/>
 Merging doesn't keep the history linear.
@@ -98,9 +106,77 @@ Rebasing (2) into (1) will replay the changes on top of (1) and create a new com
 for each commit in (2) resulting in (1+2).
 ```
 <details>
-<summary>👉 Expand for a nicer visualization </summary>
+<summary> Expand for a nicer visualization </summary>
 <img width="1270" height="720" alt="image" src="../assets/merge_rebase.png" />
 </details>
+
+### 8. [Fetch changes](#fetch-changes)
+Pull down changes into currently active branch from a remote branch but **do not apply** them. <br/>
+HEAD pointer doesn't move. <br/>
+To later apply the changes, ```git rebase``` or ```git merge``` shall be used.
+```cli
+$ git fetch <remote-name>
+```
+
+### 9. [Pull changes](#pull-changes)
+Pull down changes into currently active branch from a remote branch and try to apply them. <br/>
+A strategy for doing so will be required. Either ```merge``` or ```rebase```. </br>
+Refer to [Merge vs Rebase](#merge-vs-rebase) for what strategy is best for you.
+```cli
+$ git pull <remote-name> --rebase
+OR
+$ git pull <remote-name> --merge
+```
+
+### 10. [Creating and deleting braches](#creating-and-deleting-branches)
+```cli
+$ git branch <new-branch-name>
+```
+Switch to branch:
+```cli
+$ git checkout <new-branch-name>
+```
+Shorthand for both:
+```cli
+$ git checkout -b <new-branch-name>
+```
+Delete branch locally and/or remotely:
+```cli
+$ git branch -d <branch-name>
+AND/OR
+$ git push -d <remote-name> <branch-name>
+```
+
+### 11. [Stashing changes](#stashing-changes)
+See a list of current stashes and the modified files:
+```cli
+$ git stash list
+$ git stash show
+```
+Stash away uncommited changes for later reuse. Think of it like a ```push``` on a stack with it's corresponding ```pop```.
+```cli
+$ git stash
+```
+To apply the stash at index N:
+```cli
+$ git stash apply N
+OR
+$ git stash apply stash@{N}
+```
+To delete a stash (last) or all of them:
+```cli
+$ git stash drop
+OR
+$ git stash clear
+```
+
+### 12. [Change default terminal editor](#change-default-terminal-editor)
+Change the default VIM text editor to some new one, like ```nano``` or ```nvim```.
+```cli
+$ git config --global code-editor "<new-editor-command>" 
+```
+
+
 
 ## References Used
 - https://stackoverflow.com/questions/74037903/how-to-upload-a-local-repository-to-github
@@ -108,3 +184,6 @@ for each commit in (2) resulting in (1+2).
 - https://stackoverflow.com/questions/75272888/adding-an-ssh-key-to-github-from-git
 - https://github.com/orgs/community/discussions/23171
 - https://stackoverflow.com/questions/8588768/how-do-i-avoid-the-specification-of-the-username-and-password-at-every-git-push
+- https://stackoverflow.com/questions/1709177/pull-a-certain-branch-from-the-remote-server
+- https://stackoverflow.com/questions/69723530/pulling-latest-repo-changes-to-your-branch
+- https://medium.com/@eloquentcoder/the-complete-guide-to-git-pull-from-your-first-fetch-and-merge-to-mastering-rebase-strategies-and-c4f54890fe2a
