@@ -1,10 +1,10 @@
 # C/C++
 ### 1. [Show include paths used by the compiler](#show-include-paths)
-```cli
+```bash
 $ <compiler> -v -E -x <lang> -
 ```
 Example:
-```cli
+```bash
 $ g++ -v -E -x c++ -
 ```
 

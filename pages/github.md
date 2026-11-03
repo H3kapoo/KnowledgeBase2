@@ -1,51 +1,51 @@
 # Git / Github
 
 ### 1. [Status of a local repo:](#status-of-a-local-repo)
-```cli
+```bash
 $ git status
 ```
 
 ### 2. [Committing the changes to the tree (not remotely):](#committing-changes-locally)
-```cli
+```bash
 $ git commit -m "for inline messages"
 OR
 $ git commit -F message_file_path_for_complex_message
 ```
 
 ### 3. [Push to remote repo (github usually):](#push-to-remote-repo)
-```cli
+```bash
 $ git push -u <remote_name> <branch_name>
 ```
 Example:
-```cli
+```bash
 $ git push -u origin master
 ```
 
 ### 4. [Configuring local git details globally:](#configuring-local-git-globally)
-```cli
+```bash
 $ git config --global user.email "email_here"
 $ git config --global user.name "github_name"
 ```
 
 ### 5. [Add, Modify or remove a remote:](#add-modify-remove-remote)
 Inspect remotes:
-```cli
+```bash
 $ git remote -v
 ```
 Add:
-```cli
+```bash
 $ git remote add <remote_name> <remote_path>
 ```
 Modify:
-```cli
+```bash
 $ git remote set-url <remote_name> <remote_path>
 ```
 Remove:
-```cli
+```bash
 $ git remote rm <remote_name>
 ```
 Example:
-```cli
+```bash
 $ git remote set-url origin https://github.com/<github_name>/<reponame>.git
 ```
 The url can a be ```https``` or ```ssh``` path. <br/>
@@ -56,7 +56,7 @@ Generating a SSH key is addressed in [Security](/pages/security.md#generating-ss
 Go to ```Profile -> Settings -> SSH and CPG Keys -> New SSH Key``` and paste the contents of the generated .pub SSH Key.
 
 #### Test connection:
-```cli
+```bash
 $ ssh -T git@github.com
 ```
 #### Expected output:
@@ -75,7 +75,7 @@ Merge will just create a new commit on top of the destination branch and will co
 The destination branch knows about the source branch and where the merge occured. <br/>
 Merging doesn't keep the history linear.
 
-```cli
+```bash
 $ git merge <branch-source> <branch-destination>
 ```
 ```cli
@@ -114,7 +114,7 @@ for each commit in (2) resulting in (1+2).
 Pull down changes into currently active branch from a remote branch but **do not apply** them. <br/>
 HEAD pointer doesn't move. <br/>
 To later apply the changes, ```git rebase``` or ```git merge``` shall be used.
-```cli
+```bash
 $ git fetch <remote-name>
 ```
 
@@ -122,26 +122,26 @@ $ git fetch <remote-name>
 Pull down changes into currently active branch from a remote branch and try to apply them. <br/>
 A strategy for doing so will be required. Either ```merge``` or ```rebase```. </br>
 Refer to [Merge vs Rebase](#merge-vs-rebase) for what strategy is best for you.
-```cli
+```bash
 $ git pull <remote-name> --rebase
 OR
 $ git pull <remote-name> --merge
 ```
 
 ### 10. [Creating and deleting braches](#creating-and-deleting-branches)
-```cli
+```bash
 $ git branch <new-branch-name>
 ```
 Switch to branch:
-```cli
+```bash
 $ git checkout <new-branch-name>
 ```
 Shorthand for both:
-```cli
+```bash
 $ git checkout -b <new-branch-name>
 ```
 Delete branch locally and/or remotely:
-```cli
+```bash
 $ git branch -d <branch-name>
 AND/OR
 $ git push -d <remote-name> <branch-name>
@@ -149,22 +149,22 @@ $ git push -d <remote-name> <branch-name>
 
 ### 11. [Stashing changes](#stashing-changes)
 See a list of current stashes and the modified files:
-```cli
+```bash
 $ git stash list
 $ git stash show
 ```
 Stash away uncommited changes for later reuse. Think of it like a ```push``` on a stack with it's corresponding ```pop```.
-```cli
+```bash
 $ git stash
 ```
 To apply the stash at index N:
-```cli
+```bash
 $ git stash apply N
 OR
 $ git stash apply stash@{N}
 ```
 To delete a stash (last) or all of them:
-```cli
+```bash
 $ git stash drop
 OR
 $ git stash clear
@@ -172,11 +172,9 @@ $ git stash clear
 
 ### 12. [Change default terminal editor](#change-default-terminal-editor)
 Change the default VIM text editor to some new one, like ```nano``` or ```nvim```.
-```cli
+```bash
 $ git config --global code-editor "<new-editor-command>" 
 ```
-
-
 
 ## References Used
 - https://stackoverflow.com/questions/74037903/how-to-upload-a-local-repository-to-github
