@@ -1,6 +1,6 @@
 # Security
 
-1. [Generating SSH Key](#generating-ssh-key)
+### 1. [Generating SSH Key](#generating-ssh-key)
 Make sure you have ```ssh-keygen``` cli tool installed. Should be there by default on linux systems.
 Standards other than ```rsa``` can be used but it's optional.
 Press ENTER on all questions the program asks.
