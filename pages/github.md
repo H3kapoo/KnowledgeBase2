@@ -41,7 +41,7 @@ Example:
 ```cli
 $ git remote set-url origin https://github.com/<github_name>/<reponame>.git
 ```
-The url can a be ```https``` or ```ssh``` path. SSH is preferrabe as it doesn't require to input the password for each push. Setting SSH keys is addressed in [Security](/pages/github.md/foo).
+The url can a be ```https``` or ```ssh``` path. SSH is preferrabe as it doesn't require to input the password for each push. Setting SSH keys is addressed in [Security](/pages/github.md/#foo).
 
 
 
