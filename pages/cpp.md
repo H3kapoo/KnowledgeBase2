@@ -75,6 +75,7 @@ struct Seq{};
 template<std::size_t I, std::size_t N, std::size_t... Values>
 struct GenerateSeqHelper
 {
+    // Note:: Values..., I actually concatenates I to Values
     using type = typename GenerateSeqHelper<I+1, N, Values..., I>::type;
 };
 
@@ -122,6 +123,28 @@ auto seq = std::integer_sequence<3,4,1,2>{};
 auto seq = std::index_sequence_for<Type_1, Type_2, Type_3>{};
 ```
 
+### 6. [Concepts and requries](#concepts-and-requires)
+A simple custom concept that requires T to be integral and that the result of adding 2 of the same types returns the same type.
+Nesting concepts requires the use of ```requires``` keyword otherwise it will not work as intended.
+```cpp
+// .hpp
+template<typename T>
+concept MyConcept = requires(T t)
+{
+    requires std::integral<T>;
+    {t + t} -> std::same_as<T>;
+};
+
+template<MyConcept T>
+void someFunc(T t) { /*...*/ }
+```
+Chaining concepts (useful when only the type is needed):
+```cpp
+// .hpp
+template<typename T>
+concept MyConcept = std::integral<T> && !std::floating_point<T>;
+
+```
 
 ## References Used
 - https://stackoverflow.com/questions/11946294/dump-include-paths-from-g
