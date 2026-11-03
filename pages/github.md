@@ -75,7 +75,8 @@ Merging doesn't keep the history linear.
 (2)      D -> E -> F
 
 Suppose (1) is main branch and (2) a feature branch.
-Merging (2) into (1) will create a new commit on top of (1) aka (F1) that contains all the changes of that feature branch
+Merging (2) into (1) will create a new commit on top of (1) aka (F1) that contains all the changes of
+that feature branch.
 ```
 
 Rebase will try to replay all the commits from the source branch on top of the destination branch and new commit hashes will be generated for all commits. <br/>
@@ -87,5 +88,6 @@ Rebasing keeps the history linear.
 (1+2) A -> B -> C -> D1 -> E1 -> F1
 
 Suppose (1) is main branch and (2) a feature branch.
-Rebasing (2) into (1) will replay the changes on top of (1) and create a new commit hashes (D1, E1, F1) for each commit in (2) resulting in (1+2).
+Rebasing (2) into (1) will replay the changes on top of (1) and create a new commit hashes (D1, E1, F1)
+for each commit in (2) resulting in (1+2).
 ```
