@@ -42,9 +42,9 @@ $ git remote set-url origin https://github.com/<github_name>/<reponame>.git
 ```
 The url can a be ```https``` or ```ssh``` path. <br/>
 SSH is preferrabe as it doesn't require to input the password for each push. <br/>
-Setting SSH keys is addressed in [Security](/pages/security.md#generating-ssh-key).
 
 ### 6. [Adding SSH Key to github:](#adding-ssh-key-to-github)
+Generating a SSH key is addressed in [Security](/pages/security.md#generating-ssh-key). <br/>
 Go to ```Profile -> Settings -> SSH and CPG Keys -> New SSH Key``` and paste the contents of the generated .pub SSH Key.
 
 #### Test connection:
@@ -68,6 +68,9 @@ The destination branch knows about the source branch and where the merge occured
 Merging doesn't keep the history linear.
 
 ```cli
+$ git merge <branch-source> <branch-destination>
+```
+```cli
 (1) A -> B -> C -> F1
                    ^
                    | merge
@@ -83,6 +86,9 @@ Rebase will try to replay all the commits from the source branch on top of the d
 The destination branch doesn't know anymore about the source branch, nothing to link it back to it. <br/>
 Rebasing keeps the history linear.
 ```cli
+$ git rebase <branch-source> <branch-destination>
+```
+```cli
 (1) A -> B -> C
 (2)      D -> E -> F
 (1+2) A -> B -> C -> D1 -> E1 -> F1
@@ -91,6 +97,7 @@ Suppose (1) is main branch and (2) a feature branch.
 Rebasing (2) into (1) will replay the changes on top of (1) and create a new commit hashes (D1, E1, F1)
 for each commit in (2) resulting in (1+2).
 ```
+<img width="1280" height="720" alt="image" src="assets/merge_rebase.png" />
 
 ## References Used
 - https://stackoverflow.com/questions/74037903/how-to-upload-a-local-repository-to-github
