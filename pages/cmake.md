@@ -32,7 +32,7 @@ cmake -B build -GNinja src/
 cmake --build build/
 ```
 
-Use [Change Permissions](#/pages/linux#change-file-permissions) to make the file executable.
+Use [Change Permissions](/pages/linux.md#change-file-permissions) to make the file executable.
 
 ## References
 - https://github.com/ninja-build/ninja/issues/1984
