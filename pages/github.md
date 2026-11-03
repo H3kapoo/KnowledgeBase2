@@ -1,4 +1,4 @@
-#Git
+# Git
 
 1. [Status of a local repo:](status-of-a-local-repo)
 ```cli
