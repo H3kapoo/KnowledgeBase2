@@ -146,6 +146,178 @@ concept MyConcept = std::integral<T> && !std::floating_point<T>;
 
 ```
 
+### 7. [Static/Extern/Inline keyword](#static-keyword)
+Internal linkage means the variable/function is visible only in the TU is has been included, can have multiple copies. <br/>
+External linkage means the variable/function can be shared by multiple TUs. <br/>
+Static storage time means the variable exists for the entire program execution. <br/>
+Static initialization of a variable means the program already knows the value of the static and doesn't need to execute code at runtime. <br/>
+Dynamic initialization means the variable, even if it's a static, cannot have it's value determined before runtime. <br/>
+Simple static usage:
+```cpp
+// .hpp
+static int x = 3; // static storage, static initialization, internal linkage
+```
+Multiple copies per TU:
+```cpp
+// .hpp (static_hpp)
+static int x; // this is a defintion at global namespace, static storage/init and internal linkage
+
+// .cpp
+#include "static_hpp"
+static int x; // this is here behind the scenes after importing
+x = 3; // this errors because it's a redefinition
+
+// .cpp
+#include "static_hpp"
+void foo()
+{
+    x = 3; // this works, copy 1
+}
+
+// .cpp_2
+#include "static_hpp"
+void bar()
+{
+    x = 3; // this also works, but it's a 2nd independent from copy 1
+}
+```
+One variable global for each TU:
+```cpp
+// .hpp (extern_hpp)
+extern int x; // static storage (global), static init, external linkage
+
+#include "extern_hpp"
+void foo()
+{
+    x = 3; // this works, no copy
+}
+
+// .cpp_2
+#include "extern_hpp"
+void bar()
+{
+    x = 3; // this also works, no copy, modifies the same memory
+}
+```
+Static variables with dynamic initialization:
+```cpp
+// .hpp
+/* Some ordinary runtime function */
+int foo()
+{
+    int sum = 0;
+    for (auto v : someVector)
+    {
+        sum += v;
+    }
+    return sum;
+}
+
+static int x = foo(); // static storage, dynamic init, internal linkage, foo() needs runtime exec
+```
+Static variables with static initialization:
+```cpp
+// .hpp
+/* Some ordinary constexpr/consteval function, assume it will be run at compile time */
+constexpr int foo() { /* Same body as before*/ }
+/* Or */
+consteval int foo() { /* Same body as before*/ }
+
+static int x = foo(); // static storage, STATIC init, internal linkage, foo() will run at compile time
+```
+Static keyword inside functions will allocate one variable no matter how many times the function is called:
+```cpp
+// .hpp
+int func()
+{
+    static int x = 0;
+    return ++x;
+}
+
+func(); // 1
+func(); // 2
+func(); // 3
+```
+This can be used with templates and one static variable will be created per unique template combination:
+```cpp
+// .hpp
+template<typename T>
+int func() {/* Same body as above */}
+
+func<int>(); // 0
+func<int>(); // 1
+func<float>(); // 0
+```
+Static variables inside classes (only one instance will exist per class):
+```cpp
+// .hpp
+struct Test
+{
+    static int x; // declaration
+}
+
+// .cpp
+int Test::x = 0; // definition. static storage, static initialization, external linkage by default
+```
+Since C++17 ```inline``` can be used:
+```cpp
+// .hpp
+struct Test
+{
+    inline static int x = 0; // declaration + init at the same time
+}
+```
+Using ```inline``` at global namespace gives the variable external linkage:
+```cpp
+// .hpp (inline_hpp)
+inline int x = 3;
+
+// .cpp_1
+#include "inline_hpp"
+void foo()
+{
+    x = 1; // x overriden with 1
+}
+
+// .cpp_2
+#include "inline_hpp"
+void foo()
+{
+    x = 2; // same x overriden with 2
+}
+```
+
+### 8. [constexpr/consteval keyword](#static-keyword)
+On short, ```constexpr``` says that a variable/function can be evaluated at compile time, but not required to. <br/>
+On the other hand, ```consteval``` says the variable/function must run/be determined at compile time.
+```cpp
+// .hpp
+constexpr int foo()
+{
+    return 45;
+}
+constexpr int x = foo(); // most propably will be resolved at compile time
+
+constexpr int bar()
+{
+    return /* Some complicated logic that cannot be resolved now */
+}
+constexpr int x = bar(); // most propably will NOT be resolved at compile time
+```
+```cpp
+consteval int foo()
+{
+    return 45;
+}
+constexpr int x = foo(); // needs to be resolved at compile time
+
+consteval int bar()
+{
+    return /* Some complicated logic that cannot be resolved now */
+}
+constexpr int x = bar(); // this will fail as bar() cannot be evaluated at compiletime
+
+```
 ## References Used
 - https://stackoverflow.com/questions/11946294/dump-include-paths-from-g
 - https://en.cppreference.com/cpp/utility/integer_sequence
