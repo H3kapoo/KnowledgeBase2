@@ -107,7 +107,7 @@ for each commit in (2) resulting in (1+2).
 ```
 <details>
 <summary> Expand for a nicer visualization </summary>
-<img width="1270" height="720" alt="image" src="../assets/merge_rebase.png" />
+<img width="1270" height="720" alt="merge_rebase" src="../assets/merge_rebase.png" />
 </details>
 
 ### 8. [Fetch changes](#fetch-changes)

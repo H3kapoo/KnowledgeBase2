@@ -34,5 +34,12 @@ cmake --build build/
 
 Use [Change Permissions](/pages/linux.md#change-file-permissions) to make the file executable.
 
+### 5. [Ninja extension for CMake](#ninja-for-cmake)
+A faster alternative to the default CMake generator. <br/>
+Can be installed via:
+```bash
+$ sudo apt install ninja-build
+```
+
 ## References
 - https://github.com/ninja-build/ninja/issues/1984
