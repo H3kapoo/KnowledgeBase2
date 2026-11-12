@@ -27,3 +27,6 @@ $ sudo apt install neofetch
 <summary> Open for showcase </summary>
 <img alt="fastfetch" src="../assets/fastfetch.png"/>
 </details>
+
+## References Used
+-

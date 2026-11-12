@@ -123,7 +123,7 @@ auto seq = std::integer_sequence<3,4,1,2>{};
 auto seq = std::index_sequence_for<Type_1, Type_2, Type_3>{};
 ```
 
-### 6. [Concepts and requries](#concepts-and-requires)
+### 6. [Concepts and requires](#concepts-and-requires)
 A simple custom concept that requires T to be integral and that the result of adding 2 of the same types returns the same type.
 Nesting concepts requires the use of ```requires``` keyword otherwise it will not work as intended.
 ```cpp
@@ -318,6 +318,57 @@ consteval int bar()
 constexpr int x = bar(); // this will fail as bar() cannot be evaluated at compiletime
 
 ```
+
+### 9. [Unique set of template parameters](#unique-set-of-template-parameters)
+```cpp
+// .hpp
+template<typename... Ts>
+struct allUnique; // base template
+
+template<typename FirstType, typename... OtherTypes>
+struct allUnique<FirstType, OtherTypes...>
+{
+    // This uses fold expressions, it copies what's inside the ( ) for each OtherType
+    // Ex for <int, float, double> :
+    // FirstType = int, OtherTypes = float, double
+    // (!std::same_as<int, float> && ((!std::same_as<int, double>)))
+    static constexpr bool value = (!std::same_as<FirstType, OtherTypes> && ...)
+                                    && allUnique<OtherTypes...>::value;
+};
+
+template <>
+struct allUnique<> // base case when no types are left
+{
+    static constexpr bool value = true;
+};
+
+template<typename... Ts>
+concept UniqueConcept = allUnique<Ts...>::value; // define a custom concept for this
+
+template<UniqueConcept Ts> // use it either like this
+struct myStruct{};
+
+template<typename... Ts> requires allUnique<Ts...>::value // or like this
+struct myStruct{};
+
+int main()
+{
+    myStruct<int, float> // ok
+    myStruct<int, int> // doesn't compile
+}
+```
+
+### 10. [X Macros](#x-macros)
+Those are macros that take other macros as parameters basically.
+```cpp
+#define MY_PROPERTIES(X_MACRO)\
+    X_MACRO(int, myInt)\
+    X_MACRO(float, myFloat)\
+    X_MACRO(std::string, myString)\
+```
+
+
 ## References Used
 - https://stackoverflow.com/questions/11946294/dump-include-paths-from-g
 - https://en.cppreference.com/cpp/utility/integer_sequence
+- https://www.youtube.com/watch?v=6i95i_X2u64
