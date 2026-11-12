@@ -365,8 +365,163 @@ Those are macros that take other macros as parameters basically.
     X_MACRO(int, myInt)\
     X_MACRO(float, myFloat)\
     X_MACRO(std::string, myString)\
+
+#define POPULATE_PREDICATE(type, name) type name;
+
+struct MyStruct
+{
+    // this..
+    MY_PROPERTIES(POPULATE_PREDICATE)
+
+    // will expand to this..
+    int myInt;
+    float myFloat;
+    std::string myString;
+}
 ```
 
+### 11. [Memory Management Objects](#memory-management-objects)
+Particularly ```unique_ptr```, ```shared_ptr``` and ```weak_ptr```. <br/>
+These help us automatically manage the memory, more specifically free-ing the allocated memory automatically instead of
+having to call ```delete``` each time and potentially forgetting to do so and thus creating memory leaks.
+
+1. ```unique_ptr``` is used when the ownership is strict, only one object can reference the managed memory:
+```cpp
+#include <memory>
+
+std::unique_ptr<int> ptr = std::make_unique<int>();
+//^ 'ptr' now manages the memory of the allocated object of type 'int'
+
+std::unique_ptr<int> ptr_copy = ptr;
+// ^ this is illegal, the memory is managed by 'ptr' already and it cannot be managed by 'ptr_copy'
+
+std::unique_ptr<int> ptr_copy = std::move(ptr);
+// ^ this is OK because ptr now transfers it's ownership to 'ptr_copy'. 'ptr' remains in an empty but
+//  defined state (will point to nothing)
+
+```
+
+2. ```shared_ptr``` is used when ownership isn't strict, aka more objects can reference the same memory:
+```cpp
+#include <memory>
+
+std::shared_ptr<int> ptr = std::shared_ptr<int>();
+//^ 'ptr' now manages the memory of the allocated object of type 'int'
+
+std::shared_ptr<int> ptr_copy = ptr;
+// ^ this is OK, the memory is managed by 'ptr' and by 'ptr_copy'
+
+```
+<br/>
+
+```shared_ptr``` uses reference counting, imagine a small structure keeping track of how many ```shared_ptr```s there are
+pointing to a particular memory address. <br/>
+Reference count increases when the ```shared_ptr``` is copied and it decreases when it goes out of scope. <br/>
+A reference count of ```zero``` means the underlying object's destructor will be called and the underlaying object will be deleted. <br/>
+Suppose:
+```cpp
+#include <memory>
+
+int main()
+{
+    std::shared_ptr<int> ptr = std::shared_ptr<int>(); // 1 reference to int address
+    {
+        std::shared_ptr<int> ptr_copy = ptr; // 2 references to int address
+        {
+            std::shared_ptr<int> ptr_copy_2 = ptr_copy; // 3 references to int address
+        } // reference count drops to 2
+    } // reference count drops to 1
+} // reference count drops to 0, nobody points to that `int` anymore, call delete
+
+```
+
+```unique_ptr``` cannot be used with ```shared_ptr``` as that will defeat the purpose of the first.
+
+3. ```weak_ptr``` goes together with ```shared_ptr``` and solves the problem of cyclic references. It is a non-owning
+view of the managed object (doesn't increase reference count):
+```cpp
+#include <memory>
+
+std::shared_ptr<int> ptr = std::shared_ptr<int>();
+//^ 'ptr' now manages the memory of the allocated object of type 'int'; reference count is 1
+
+std::weak_ptr<int> weak_ptr_copy = ptr;
+// ^ this is OK, the memory is managed by 'ptr' and `weak_ptr_copy` 
+// just "remembers this", it doesn't increase ref count
+
+std::shared_ptr<int> concrete_ptr = weak_ptr_copy.expired() ? nullptr : weak_ptr_copy.lock();
+// ^ later we can lock the weak ptr to get the shared_ptr out of it (if it's still alive, ref > 0).
+// doing this increases ref count by 1 since now `concrete_ptr` also points to `ptr` managed memory.
+
+```
+
+```weak_ptr``` can solve cyclic references because in those cases ```shared_ptr``` has it's reference count in such
+a way that it never reaches zero. <br/>
+Suppose:
+
+```cpp
+struct Tree
+{
+    std::shared_ptr<Tree> parent;
+    std::shared_ptr<Tree> child;
+};
+
+int main()
+{
+    // RC = ref count
+    std::shared_ptr<Tree> parent = std::make_shared<Tree>(); // parent_RC = 1
+    std::shared_ptr<Tree> child = std::make_shared<Tree>(); // child_RC = 1
+
+    parent.parent = nullptr; // parent has no parent
+    parent.child = child; // child_RC + 1 => 2
+    child.parent = parent; // parent_RC +1 => 2
+
+} // now we go out of scope with everything
+
+/*
+1. 'child' goes out of scope, RC decreases by 1, 2-1 = 1, it doesn't get deallocated (not zero)
+     > 'parent' keeps a reference to it in parent.child
+2. 'parent' goes out of scope, RC decreases by 1, 2-1 = 1, it doesn't get deallocated (not zero)
+     > 'child' keeps a reference to it in child.parent
+
+No object got deallocated since no RC reached zero.
+*/
+```
+Now suppose the correct version which uses ```weak_ptr```:
+```cpp
+struct Tree
+{
+    std::weak_ptr<Tree> parent;
+    // ^ keep a non-owning reference to the parent
+    std::shared_ptr<Tree> child;
+};
+
+int main()
+{
+    // RC = ref count
+    std::shared_ptr<Tree> parent = std::make_shared<Tree>(); // parent_RC = 1
+    std::shared_ptr<Tree> child = std::make_shared<Tree>(); // child_RC = 1
+
+    parent.parent = nullptr; // parent has no parent
+    parent.child = child; // child_RC + 1 => 2
+    child.parent = parent; // parent_RC REMAINS 1 (it's a weak_ptr to a shared_ptr)
+
+    if (std::shared_ptr<Tree> locked = child.parent.lock(); locked) // parent_RC + 1 => 2
+    {
+        /* ... */
+    } // parent_RC - 1 => 1
+
+} // now we go out of scope with everything
+
+/*
+1. 'child' goes out of scope, RC decreases by 1, 2-1 = 1, it doesn't get deallocated (not zero)
+     > 'parent' keeps a reference to it in parent.child
+2. 'parent' goes out of scope, RC decreases by 1, 1-1 = 0, it gets deallocated
+     > 'child' gets deallocated as well since 'parent' no longer exists to keep a reference to it
+
+All objects reached RC zero and got deallocated.
+*/
+```
 
 ## References Used
 - https://stackoverflow.com/questions/11946294/dump-include-paths-from-g
